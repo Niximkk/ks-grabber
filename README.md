@@ -2,6 +2,14 @@
 
 KS-Grabber is a keystroke injection grabber that is fully modular and developed with PowerShell. This script allows you to collect information from various sources and send it to a webhook.
 
+## Functions
+
+Gather PC Specs
+Gather WiFi profiles and it's passwords
+Gather Open Ports
+Gather Installed Softwares
+
+
 ## Usage
 
 Run the following command in PowerShell to execute KS-Grabber:
